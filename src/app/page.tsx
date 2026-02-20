@@ -1,66 +1,105 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from "next/link";
+import Navbar from "@/components/Navbar/Navbar";
+import Footer from "@/components/Footer/Footer";
+import "./landing.css";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
+    <div className="landing-page">
+      {/* Hero Section */}
+      <header className="hero">
+        <Navbar currentPage="home" />
+        
+        <div className="hero-content">
+          <h1 className="hero-title">
+            Build Faster with <span className="highlight">novabyte</span>
+          </h1>
+          <p className="hero-subtitle">
+            Powerful templates, essential scripts, and seamless endpoint conversion for modern development
+          </p>
+          <div className="hero-cta">
+            <Link href="#services" className="btn btn-primary">
+              Explore Services
+            </Link>
+            <Link href="#about" className="btn btn-secondary">
+              Learn More
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Services Section */}
+      <section id="services" className="services">
+        <h2 className="section-title">Our Services</h2>
+        <div className="services-grid">
+          <Link href="/templates" className="service-card">
+            <div className="service-icon">📦</div>
+            <h3>Templates</h3>
+            <p>Ready-to-use project templates and boilerplates to kickstart your development</p>
+            <span className="service-link">Explore Templates →</span>
+          </Link>
+
+          <Link href="/scripts" className="service-card">
+            <div className="service-icon">⚡</div>
+            <h3>Scripts</h3>
+            <p>Automation scripts and utilities to streamline your workflow and boost productivity</p>
+            <span className="service-link">Browse Scripts →</span>
+          </Link>
+
+          <Link href="/endpoint-converter" className="service-card">
+            <div className="service-icon">🔄</div>
+            <h3>Endpoint Converter</h3>
+            <p>Convert and manage API endpoints with RTK Query integration for seamless state management</p>
+            <span className="service-link">Try Converter →</span>
+          </Link>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="features">
+        <h2 className="section-title">Why Choose novabyte?</h2>
+        <div className="features-grid">
+          <div className="feature-item">
+            <div className="feature-icon">🚀</div>
+            <h3>Lightning Fast</h3>
+            <p>Optimized for performance and speed</p>
+          </div>
+          <div className="feature-item">
+            <div className="feature-icon">🎨</div>
+            <h3>Modern Design</h3>
+            <p>Beautiful and intuitive user interfaces</p>
+          </div>
+          <div className="feature-item">
+            <div className="feature-icon">🔧</div>
+            <h3>Easy to Use</h3>
+            <p>Simple integration with your existing projects</p>
+          </div>
+          <div className="feature-item">
+            <div className="feature-icon">📱</div>
+            <h3>Responsive</h3>
+            <p>Works seamlessly across all devices</p>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="about">
+        <div className="about-content">
+          <h2 className="section-title">About novabyte</h2>
           <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+            novabyte is your go-to platform for modern development tools. We provide high-quality templates, 
+            powerful scripts, and innovative solutions like our RTK-based endpoint converter to help developers 
+            build better applications faster.
+          </p>
+          <p>
+            Whether you're starting a new project or enhancing an existing one, novabyte has the tools you need 
+            to succeed.
           </p>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </section>
+
+      {/* Footer */}
+      <Footer variant="landing" />
     </div>
   );
 }

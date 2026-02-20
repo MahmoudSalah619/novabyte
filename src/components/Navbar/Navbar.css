@@ -1,0 +1,61 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 5%;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.nav-brand {
+  flex-shrink: 0;
+}
+
+.nav-brand .logo-text {
+  font-size: 1.75rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffb339, #e09818);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  cursor: pointer;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  margin-left: auto;
+}
+
+.nav-links a {
+  color: #cbd5e1;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  font-size: 1rem;
+  position: relative;
+}
+
+.nav-links a:hover {
+  color: #ffb339;
+}
+
+.nav-links a.active {
+  color: #ffb339;
+}
+
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #ffb339, #e09818);
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+}

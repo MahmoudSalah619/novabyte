@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swagger to RTK Query Converter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #6366f1;
+        --primary-dark: #4f46e5;
+        --primary-light: #8b5cf6;
+        --success: #10b981;
+        --success-bg: #ecfdf5;
+        --success-border: #d1fae5;
+        --error: #ef4444;
+        --error-bg: #fef2f2;
+        --error-border: #fecaca;
+        --warning: #f59e0b;
+        --warning-bg: #fffbeb;
+        --warning-border: #fed7aa;
+        --background: #0f172a;
+        --surface: #1e293b;
+        --surface-light: #334155;
+        --text: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --text-muted: #94a3b8;
+        --border: #334155;
+        --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        --gradient: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-light) 100%
+        );
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: var(--background);
+        color: var(--text);
+        min-height: 100vh;
+        line-height: 1.6;
+        background-image: radial-gradient(
+            at 25% 25%,
+            rgba(99, 102, 241, 0.1) 0px,
+            transparent 50%
+          ),
+          radial-gradient(
+            at 75% 75%,
+            rgba(139, 92, 246, 0.1) 0px,
+            transparent 50%
+          );
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .header h1 {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 700;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        line-height: 1.1;
+      }
+
+      .header p {
+        color: var(--text-secondary);
+        font-size: 1.2rem;
+        font-weight: 300;
+      }
+
+      .main-card {
+        background: var(--surface);
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(10px);
+        flex: 1;
+      }
+
+      .form-section {
+        margin-bottom: 2.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.75rem;
+        font-weight: 500;
+        color: var(--text);
+        font-size: 0.95rem;
+      }
+
+      .input-container {
+        position: relative;
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      textarea::placeholder {
+        color: var(--text-muted);
+      }
+
+      .input-method-btn {
+        flex: 1;
+        padding: 1rem;
+        background: var(--background);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+
+      .input-method-btn:hover {
+        border-color: var(--primary);
+        background: rgba(99, 102, 241, 0.05);
+        color: var(--primary);
+        transform: translateY(-1px);
+      }
+
+      .input-method-btn.active {
+        background: var(--gradient);
+        border-color: var(--primary);
+        color: white;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      }
+
+      .drop-zone {
+        border: 2px dashed var(--border);
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        text-align: center;
+        background: var(--background);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .drop-zone:hover {
+        border-color: var(--primary);
+        background: rgba(99, 102, 241, 0.05);
+      }
+
+      .drop-zone.dragover {
+        border-color: var(--primary);
+        background: rgba(99, 102, 241, 0.1);
+        transform: scale(1.02);
+      }
+
+      .format-card {
+        background: var(--background);
+        padding: 1rem;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+      }
+
+      .btn {
+        background: var(--gradient);
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 16px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 20px 40px -12px rgba(99, 102, 241, 0.4);
+      }
+
+      .btn:disabled {
+        background: var(--surface-light);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn-loading {
+        pointer-events: none;
+      }
+
+      .btn-loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        margin: auto;
+        border: 2px solid white;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      @keyframes spin {
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+
+      .result {
+        margin-top: 1.5rem;
+        padding: 1.25rem;
+        border-radius: 16px;
+        border: 1px solid;
+        font-size: 0.95rem;
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .success {
+        background-color: var(--success-bg);
+        border-color: var(--success-border);
+        color: var(--success);
+      }
+
+      .error {
+        background-color: var(--error-bg);
+        border-color: var(--error-border);
+        color: var(--error);
+      }
+
+      .loading {
+        background-color: var(--warning-bg);
+        border-color: var(--warning-border);
+        color: var(--warning);
+      }
+
+      .download-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding: 0.75rem 1.5rem;
+        background: var(--success);
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .download-link:hover {
+        background: #059669;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
+      }
+
+      .examples {
+        margin-top: 2.5rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 16px;
+        border: 1px solid var(--border);
+      }
+
+      .examples h3 {
+        color: var(--text);
+        margin-bottom: 1rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
+      .example-url {
+        background: var(--background);
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        font-family: "JetBrains Mono", monospace;
+        margin: 0.5rem 0;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        word-break: break-all;
+      }
+
+      .example-url:hover {
+        border-color: var(--primary);
+        background: rgba(99, 102, 241, 0.05);
+        color: var(--primary);
+        transform: translateX(4px);
+      }
+
+      .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 50px;
+        color: var(--success);
+        font-size: 0.85rem;
+        font-weight: 500;
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1000;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--success);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 1rem;
+        }
+
+        .main-card {
+          padding: 1.5rem;
+          border-radius: 20px;
+        }
+
+        .status-indicator {
+          position: relative;
+          top: auto;
+          right: auto;
+          margin-bottom: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="serverStatus" class="status-indicator" style="display: none">
+      <div class="status-dot"></div>
+      <span>Server Online</span>
+    </div>
+
+    <div class="container">
+      <div class="header">
+        <h1>Swagger → RTK</h1>
+        <p>Transform your API specs into Redux Toolkit Query endpoints</p>
+      </div>
+
+      <div class="main-card">
+        <div class="form-section">
+          <form id="convertForm">
+            <!-- Input Method Selector -->
+            <div class="form-group">
+              <label style="margin-bottom: 1rem;">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  style="vertical-align: -2px; margin-right: 8px"
+                >
+                  <path d="M4 7h16M4 12h16M4 17h16"></path>
+                </svg>
+                Choose Input Method
+              </label>
+              <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                <button type="button" id="fileBtn" class="input-method-btn active" onclick="switchInputMethod('file')">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                  </svg>
+                  Upload File
+                </button>
+                <button type="button" id="jsonBtn" class="input-method-btn" onclick="switchInputMethod('json')">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                  </svg>
+                  Paste JSON
+                </button>
+              </div>
+            </div>
+
+            <!-- File Upload Section -->
+            <div class="form-group" id="fileGroup">
+              <label for="fileInput">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  style="vertical-align: -2px; margin-right: 8px"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Upload Swagger/OpenAPI File
+              </label>
+              <div class="file-upload-container">
+                <input
+                  type="file"
+                  id="fileInput"
+                  accept=".json,.yaml,.yml"
+                  style="display: none;"
+                  onchange="handleFileSelect(event)"
+                />
+                <div id="dropZone" class="drop-zone" onclick="document.getElementById('fileInput').click()">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.5; margin-bottom: 1rem;">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                  </svg>
+                  <div style="font-weight: 500; margin-bottom: 0.5rem;">Click to upload or drag and drop</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">JSON, YAML files accepted</div>
+                  <div id="fileName" style="margin-top: 1rem; font-weight: 600; color: var(--primary);"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- JSON Input Section -->
+            <div class="form-group" id="jsonGroup" style="display: none;">
+              <label for="jsonInput">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  style="vertical-align: -2px; margin-right: 8px"
+                >
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                Paste Swagger/OpenAPI JSON
+              </label>
+              <div class="input-container">
+                <textarea
+                  id="jsonInput"
+                  placeholder='Paste your Swagger/OpenAPI JSON here...'
+                  rows="12"
+                  style="width: 100%; padding: 1rem 1.25rem; background: var(--background); border: 2px solid var(--border); border-radius: 16px; font-size: 0.95rem; color: var(--text); font-family: 'JetBrains Mono', monospace; resize: vertical; min-height: 200px;"
+                ></textarea>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+                  💡 Paste your complete Swagger/OpenAPI specification in JSON format
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" id="convertBtn" class="btn">
+              <span class="btn-text">Generate RTK Query Code</span>
+            </button>
+          </form>
+
+          <div id="result"></div>
+        </div>
+
+        <div class="examples">
+          <h3>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              style="vertical-align: -2px; margin-right: 8px"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 16v-4M12 8h.01"></path>
+            </svg>
+            Supported Formats
+          </h3>
+          <div style="display: grid; gap: 1rem; margin-top: 1rem;">
+            <div class="format-card">
+              <strong>Swagger 2.0</strong>
+              <div style="font-size: 0.85em; opacity: 0.7; margin-top: 0.25rem">
+                JSON format supported
+              </div>
+            </div>
+            <div class="format-card">
+              <strong>OpenAPI 3.x</strong>
+              <div style="font-size: 0.85em; opacity: 0.7; margin-top: 0.25rem">
+                JSON and YAML formats supported
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>
+          Created by <strong>Mahmoud Salah</strong> •
+          <a
+            href="mailto:mahmoud.s.m619@gmail.com"
+            style="color: var(--primary); text-decoration: none"
+            >mahmoud.s.m619@gmail.com</a
+          >
+        </p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.7">
+          Transforming Swagger specs into Redux Toolkit Query endpoints with
+          style ✨
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("convertForm");
+      const fileInput = document.getElementById("fileInput");
+      const jsonInput = document.getElementById("jsonInput");
+      const fileGroup = document.getElementById("fileGroup");
+      const jsonGroup = document.getElementById("jsonGroup");
+      const fileBtn = document.getElementById("fileBtn");
+      const jsonBtn = document.getElementById("jsonBtn");
+      const dropZone = document.getElementById("dropZone");
+      const fileName = document.getElementById("fileName");
+      const convertBtn = document.getElementById("convertBtn");
+      const resultDiv = document.getElementById("result");
+      const btnText = document.querySelector(".btn-text");
+      const statusIndicator = document.getElementById("serverStatus");
+
+      let currentInputMethod = 'file';
+      let selectedFile = null;
+      let swaggerData = null;
+
+      function switchInputMethod(method) {
+        currentInputMethod = method;
+        
+        if (method === 'file') {
+          fileGroup.style.display = 'block';
+          jsonGroup.style.display = 'none';
+          fileBtn.classList.add('active');
+          jsonBtn.classList.remove('active');
+        } else {
+          fileGroup.style.display = 'none';
+          jsonGroup.style.display = 'block';
+          fileBtn.classList.remove('active');
+          jsonBtn.classList.add('active');
+          jsonInput.focus();
+        }
+      }
+
+      function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (file) {
+          selectedFile = file;
+          fileName.textContent = `📄 ${file.name}`;
+          readFileContent(file);
+        }
+      }
+
+      function readFileContent(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const content = e.target.result;
+            // Try to parse as JSON first
+            if (file.name.endsWith('.json')) {
+              swaggerData = JSON.parse(content);
+            } else if (file.name.endsWith('.yaml') || file.name.endsWith('.yml')) {
+              // For YAML, send as string and let server handle it
+              swaggerData = content;
+            } else {
+              // Try JSON parse for unknown extensions
+              swaggerData = JSON.parse(content);
+            }
+            console.log('✅ File loaded successfully');
+          } catch (error) {
+            showResult('error', `
+              <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 0.5rem;">Invalid File Format</div>
+                  <div style="font-size: 0.9em; opacity: 0.8;">Please upload a valid JSON or YAML file</div>
+                </div>
+              </div>
+            `);
+            selectedFile = null;
+            swaggerData = null;
+            fileName.textContent = '';
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      // Drag and drop functionality
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+      });
+
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          fileInput.files = e.dataTransfer.files;
+          handleFileSelect({ target: { files: [file] } });
+        }
+      });
+
+      function showResult(type, message, downloadUrl = null) {
+        resultDiv.className = `result ${type}`;
+        let content = message;
+
+        if (downloadUrl) {
+          content += `
+            <a href="${downloadUrl}" class="download-link" target="_blank">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Download RTK Query Files
+            </a>
+          `;
+        }
+
+        resultDiv.innerHTML = content;
+      }
+
+      function updateButtonState(loading = false, text = "Generate RTK Query Code") {
+        convertBtn.disabled = loading;
+        convertBtn.className = loading ? "btn btn-loading" : "btn";
+        btnText.textContent = text;
+
+        if (loading) {
+          btnText.style.opacity = "0";
+        } else {
+          btnText.style.opacity = "1";
+        }
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        let dataToSend = null;
+
+        if (currentInputMethod === 'file') {
+          if (!swaggerData) {
+            showResult("error", `
+              <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                <div>
+                  <div style="font-weight: 600;">Please select a file</div>
+                </div>
+              </div>
+            `);
+            return;
+          }
+          dataToSend = swaggerData;
+        } else {
+          const jsonText = jsonInput.value.trim();
+          if (!jsonText) {
+            showResult("error", `
+              <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                <div>
+                  <div style="font-weight: 600;">Please paste JSON content</div>
+                </div>
+              </div>
+            `);
+            return;
+          }
+
+          try {
+            dataToSend = JSON.parse(jsonText);
+          } catch (error) {
+            showResult("error", `
+              <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 0.5rem;">Invalid JSON</div>
+                  <div style="font-size: 0.9em; opacity: 0.8;">${error.message}</div>
+                </div>
+              </div>
+            `);
+            return;
+          }
+        }
+
+        updateButtonState(true, "Processing...");
+        showResult(
+          "loading",
+          `
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div style="width: 20px; height: 20px; border: 2px solid #f59e0b; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+              <div>
+                <div style="font-weight: 600; margin-bottom: 0.25rem;">Processing your Swagger specification...</div>
+                <div style="font-size: 0.9em; opacity: 0.8;">This may take a few moments</div>
+              </div>
+            </div>
+          `
+        );
+
+        try {
+          const requestBody = { 
+            swaggerData: dataToSend,
+            isDirectData: true
+          };
+
+          const response = await fetch("http://localhost:3000/convert", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showResult(
+              "success",
+              `
+                <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+                    <path d="M9 11l3 3 8-8"></path>
+                    <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.38 0 2.69.31 3.86.87"></path>
+                  </svg>
+                  <div>
+                    <div style="font-weight: 600; color: #10b981; margin-bottom: 0.5rem;">
+                      ${data.message}
+                    </div>
+                    <div style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0.25rem;">
+                      Job ID: <code style="background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.85em;">${data.jobId}</code>
+                    </div>
+                    <div style="font-size: 0.85em; opacity: 0.7;">
+                      Generated at ${new Date().toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              `,
+              data.downloadUrl
+            );
+          } else {
+            showResult(
+              "error",
+              `
+                <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                  </svg>
+                  <div>
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">
+                      ${data.error}
+                    </div>
+                    ${data.details ? `<div style="font-size: 0.9em; opacity: 0.8;">${data.details}</div>` : ""}
+                  </div>
+                </div>
+              `
+            );
+          }
+        } catch (error) {
+          showResult(
+            "error",
+            `
+              <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                <div>
+                  <div style="font-weight: 600; margin-bottom: 0.5rem;">Network Error</div>
+                  <div style="font-size: 0.9em; opacity: 0.8;">${error.message}</div>
+                  <div style="font-size: 0.85em; opacity: 0.7; margin-top: 0.5rem;">
+                    Make sure the server is running on port 3000
+                  </div>
+                </div>
+              </div>
+            `
+          );
+        } finally {
+          updateButtonState(false);
+        }
+      });
+
+      // Test server health on page load
+      window.addEventListener("load", async () => {
+        try {
+          const response = await fetch("http://localhost:3000/health");
+          const data = await response.json();
+
+          if (data.status === "OK") {
+            statusIndicator.style.display = "flex";
+            console.log("✅ Server status:", data);
+          }
+        } catch (error) {
+          console.log("⚠️ Server not available:", error.message);
+          statusIndicator.style.display = "none";
+
+          setTimeout(() => {
+            showResult(
+              "error",
+              `
+                <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                  </svg>
+                  <div>
+                    <div style="font-weight: 600; margin-bottom: 0.5rem;">Server Offline</div>
+                    <div style="font-size: 0.9em; opacity: 0.8; margin-bottom: 0.5rem;">
+                      Cannot connect to the conversion service.
+                    </div>
+                    <div style="font-size: 0.85em; opacity: 0.7;">
+                      Please start the server with: <code style="background: rgba(239, 68, 68, 0.1); padding: 2px 6px; border-radius: 4px;">npm start</code>
+                    </div>
+                  </div>
+                </div>
+              `
+            );
+          }, 1000);
+        }
+      });
+
+      // Add keyboard shortcuts
+      document.addEventListener("keydown", (e) => {
+        // Ctrl/Cmd + Enter to submit
+        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+          form.dispatchEvent(new Event("submit"));
+        }
+
+        // Escape to clear result
+        if (e.key === "Escape") {
+          resultDiv.innerHTML = "";
+        }
+      });
+    </script>
+  </body>
+</html>

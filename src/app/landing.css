@@ -1,0 +1,244 @@
+.landing-page {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #0f172a, #1e293b);
+  color: #f8fafc;
+}
+
+/* Hero Section */
+.hero {
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 5%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  color: #f8fafc;
+}
+
+.hero-title .highlight {
+  background: linear-gradient(135deg, #ffb339, #e09818);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: #cbd5e1;
+  margin-bottom: 3rem;
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  padding: 1.125rem 2.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  display: inline-block;
+  min-width: 250px;
+  width: auto;
+  text-align: center;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #ffb339, #e09818);
+  color: #0f172a;
+  box-shadow: 0 4px 20px rgba(255, 179, 57, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 179, 57, 0.4);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #f8fafc;
+  border: 2px solid #475569;
+}
+
+.btn-secondary:hover {
+  border-color: #ffb339;
+  color: #ffb339;
+}
+
+/* Services Section */
+.services {
+  padding: 6rem 5%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 4rem;
+  color: #f8fafc;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.service-card {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid #334155;
+  border-radius: 1rem;
+  padding: 2.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  border-color: #ffb339;
+  box-shadow: 0 10px 40px rgba(255, 179, 57, 0.2);
+  background: rgba(30, 41, 59, 1);
+}
+
+.service-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.service-card h3 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  color: #f8fafc;
+  font-weight: 700;
+}
+
+.service-card p {
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.service-link {
+  color: #ffb339;
+  font-weight: 600;
+  margin-top: auto;
+}
+
+/* Features Section */
+.features {
+  padding: 6rem 5%;
+  background: rgba(15, 23, 42, 0.5);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+}
+
+.feature-item {
+  text-align: center;
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.feature-item h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #f8fafc;
+  font-weight: 600;
+}
+
+.feature-item p {
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+/* About Section */
+.about {
+  padding: 6rem 5%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.about-content {
+  text-align: center;
+}
+
+.about-content p {
+  color: #cbd5e1;
+  font-size: 1.125rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-cta {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

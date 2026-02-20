@@ -1,0 +1,133 @@
+/* Landing Page Footer */
+.footer {
+  background: rgba(15, 23, 42, 0.9);
+  border-top: 1px solid #334155;
+  padding: 3rem 5% 1.5rem;
+  margin-top: 4rem;
+}
+
+.footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 4rem;
+  margin-bottom: 2rem;
+}
+
+.footer-brand .logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffb339, #e09818);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.footer-brand p {
+  color: #94a3b8;
+  margin-top: 0.5rem;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.footer-column h4 {
+  color: #f8fafc;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.footer-column a {
+  display: block;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.footer-column a:hover {
+  color: #ffb339;
+}
+
+.footer-bottom {
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #334155;
+  color: #64748b;
+}
+
+/* Service Page Footer */
+.service-footer {
+  background: rgba(15, 23, 42, 0.9);
+  border-top: 1px solid #334155;
+  padding: 2rem 5%;
+  margin-top: 4rem;
+}
+
+.service-footer .footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.service-footer .logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffb339, #e09818);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.service-footer .footer-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.service-footer .footer-links a {
+  color: #94a3b8;
+  transition: color 0.3s ease;
+}
+
+.service-footer .footer-links a:hover {
+  color: #ffb339;
+}
+
+.footer-copyright {
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid #334155;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .service-footer .footer-content {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  .service-footer .footer-links {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}

@@ -1,0 +1,13 @@
+# Server temporary files and generated content
+temp/
+downloads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
