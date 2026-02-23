@@ -8,6 +8,8 @@ import "../templates/services.css";
 import "./converter.css";
 
 export default function EndpointConverter() {
+  const CONVERTER_BASE_URL =
+    process.env.NEXT_PUBLIC_CONVERTER_BASE_URL ?? "http://localhost:4000";
   const [inputMethod, setInputMethod] = useState<'file' | 'json'>('file');
   const [jsonInput, setJsonInput] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -24,7 +26,7 @@ export default function EndpointConverter() {
 
   const checkServerHealth = async () => {
     try {
-      const response = await fetch("http://localhost:3000/health");
+      const response = await fetch(`${CONVERTER_BASE_URL}/health`);
       const data = await response.json();
       if (data.status === "OK") {
         setServerOnline(true);
@@ -34,7 +36,7 @@ export default function EndpointConverter() {
       setTimeout(() => {
         setResult({
           type: 'error',
-          message: 'Cannot connect to the conversion service. Please start the server with: npm start'
+          message: 'Cannot connect to the conversion service. Please start the backend with: npm run server:dev (or npm run server)'
         });
       }, 1000);
     }
@@ -137,7 +139,7 @@ export default function EndpointConverter() {
         isDirectData: true
       };
 
-      const response = await fetch("http://localhost:3000/convert", {
+      const response = await fetch(`${CONVERTER_BASE_URL}/convert`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -162,7 +164,7 @@ export default function EndpointConverter() {
     } catch (error: any) {
       setResult({
         type: 'error',
-        message: `Network Error: ${error.message}. Make sure the server is running on port 3000`
+        message: `Network Error: ${error.message}. Make sure the conversion server is running (default: http://localhost:4000)`
       });
     } finally {
       setIsLoading(false);
