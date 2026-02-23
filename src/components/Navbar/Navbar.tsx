@@ -21,7 +21,7 @@ export default function Navbar({ currentPage = 'home' }: NavbarProps) {
           Templates
         </Link>
         <Link href="/scripts" className={currentPage === 'scripts' ? 'active' : ''}>
-          Scripts
+          Developer Toolkit
         </Link>
         <Link href="/endpoint-converter" className={currentPage === 'endpoint-converter' ? 'active' : ''}>
           Endpoint Converter
