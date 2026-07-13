@@ -1,24 +1,22 @@
 "use client";
 
-import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+// import Link from "next/link";
+import { useState, /* useRef, */ useEffect } from "react";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import "../templates/services.css";
 import "./converter.css";
 
 export default function EndpointConverter() {
-  const CONVERTER_BASE_URL =
-    process.env.NEXT_PUBLIC_CONVERTER_BASE_URL ?? "http://localhost:4000";
-  const [inputMethod, setInputMethod] = useState<'file' | 'json'>('file');
+  // const [inputMethod, setInputMethod] = useState<'file' | 'json'>('file');
   const [jsonInput, setJsonInput] = useState('');
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [swaggerData, setSwaggerData] = useState<any>(null);
+  // const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  // const [swaggerData, setSwaggerData] = useState<any>(null);
   const [result, setResult] = useState<{ type: 'success' | 'error' | 'loading' | null; message: string; downloadUrl?: string }>({ type: null, message: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [serverOnline, setServerOnline] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  // const fileInputRef = useRef<HTMLInputElement>(null);
+  // const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     checkServerHealth();
@@ -26,7 +24,7 @@ export default function EndpointConverter() {
 
   const checkServerHealth = async () => {
     try {
-      const response = await fetch(`${CONVERTER_BASE_URL}/health`);
+      const response = await fetch("/api/convert");
       const data = await response.json();
       if (data.status === "OK") {
         setServerOnline(true);
@@ -36,95 +34,99 @@ export default function EndpointConverter() {
       setTimeout(() => {
         setResult({
           type: 'error',
-          message: 'Cannot connect to the conversion service. Please start the backend with: npm run server:dev (or npm run server)'
+          message: 'Cannot connect to the conversion service.'
         });
       }, 1000);
     }
   };
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      readFileContent(file);
-    }
-  };
+  // --- File Upload handlers (commented out) ---
+  // const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     setSelectedFile(file);
+  //     readFileContent(file);
+  //   }
+  // };
 
-  const readFileContent = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const content = e.target?.result as string;
-        if (file.name.endsWith('.json')) {
-          setSwaggerData(JSON.parse(content));
-        } else if (file.name.endsWith('.yaml') || file.name.endsWith('.yml')) {
-          setSwaggerData(content);
-        } else {
-          setSwaggerData(JSON.parse(content));
-        }
-      } catch (error) {
-        setResult({
-          type: 'error',
-          message: 'Invalid file format. Please upload a valid JSON or YAML file.'
-        });
-        setSelectedFile(null);
-        setSwaggerData(null);
-      }
-    };
-    reader.readAsText(file);
-  };
+  // const readFileContent = (file: File) => {
+  //   const reader = new FileReader();
+  //   reader.onload = (e) => {
+  //     try {
+  //       const content = e.target?.result as string;
+  //       if (file.name.endsWith('.json')) {
+  //         setSwaggerData(JSON.parse(content));
+  //       } else if (file.name.endsWith('.yaml') || file.name.endsWith('.yml')) {
+  //         setSwaggerData(content);
+  //       } else {
+  //         setSwaggerData(JSON.parse(content));
+  //       }
+  //     } catch (error) {
+  //       setResult({
+  //         type: 'error',
+  //         message: 'Invalid file format. Please upload a valid JSON or YAML file.'
+  //       });
+  //       setSelectedFile(null);
+  //       setSwaggerData(null);
+  //     }
+  //   };
+  //   reader.readAsText(file);
+  // };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
+  // const handleDragOver = (e: React.DragEvent) => {
+  //   e.preventDefault();
+  //   setIsDragging(true);
+  // };
 
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
+  // const handleDragLeave = () => {
+  //   setIsDragging(false);
+  // };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      setSelectedFile(file);
-      readFileContent(file);
-    }
-  };
+  // const handleDrop = (e: React.DragEvent) => {
+  //   e.preventDefault();
+  //   setIsDragging(false);
+  //   
+  //   const file = e.dataTransfer.files[0];
+  //   if (file) {
+  //     setSelectedFile(file);
+  //     readFileContent(file);
+  //   }
+  // };
+  // --- End File Upload handlers ---
 
   const handleConvert = async () => {
     let dataToSend = null;
 
-    if (inputMethod === 'file') {
-      if (!swaggerData) {
-        setResult({
-          type: 'error',
-          message: 'Please select a file'
-        });
-        return;
-      }
-      dataToSend = swaggerData;
-    } else {
-      const jsonText = jsonInput.trim();
-      if (!jsonText) {
-        setResult({
-          type: 'error',
-          message: 'Please paste JSON content'
-        });
-        return;
-      }
+    // --- File input branch (commented out) ---
+    // if (inputMethod === 'file') {
+    //   if (!swaggerData) {
+    //     setResult({
+    //       type: 'error',
+    //       message: 'Please select a file'
+    //     });
+    //     return;
+    //   }
+    //   dataToSend = swaggerData;
+    // } else {
+    // --- End File input branch ---
 
-      try {
-        dataToSend = JSON.parse(jsonText);
-      } catch (error: any) {
-        setResult({
-          type: 'error',
-          message: `Invalid JSON: ${error.message}`
-        });
-        return;
-      }
+    const jsonText = jsonInput.trim();
+    if (!jsonText) {
+      setResult({
+        type: 'error',
+        message: 'Please paste JSON content'
+      });
+      return;
+    }
+
+    try {
+      dataToSend = JSON.parse(jsonText);
+    } catch (error: any) {
+      setResult({
+        type: 'error',
+        message: `Invalid JSON: ${error.message}`
+      });
+      return;
     }
 
     setIsLoading(true);
@@ -133,13 +135,17 @@ export default function EndpointConverter() {
       message: 'Processing your Swagger specification... This may take a few moments'
     });
 
+    // Revoke previous URL if any
+    if (result.downloadUrl) {
+      URL.revokeObjectURL(result.downloadUrl);
+    }
+
     try {
       const requestBody = { 
-        swaggerData: dataToSend,
-        isDirectData: true
+        swaggerData: dataToSend
       };
 
-      const response = await fetch(`${CONVERTER_BASE_URL}/convert`, {
+      const response = await fetch("/api/convert", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -147,24 +153,30 @@ export default function EndpointConverter() {
         body: JSON.stringify(requestBody),
       });
 
-      const data = await response.json();
-
-      if (data.success) {
-        setResult({
-          type: 'success',
-          message: `${data.message} - Job ID: ${data.jobId}`,
-          downloadUrl: data.downloadUrl
-        });
-      } else {
-        setResult({
-          type: 'error',
-          message: `${data.error}${data.details ? `: ${data.details}` : ''}`
-        });
+      if (!response.ok) {
+        let errMessage = "Failed to convert Swagger specification";
+        try {
+          const errData = await response.json();
+          errMessage = errData.error || errMessage;
+          if (errData.details) {
+            errMessage += `: ${errData.details}`;
+          }
+        } catch (_) {}
+        throw new Error(errMessage);
       }
+
+      const blob = await response.blob();
+      const downloadUrl = URL.createObjectURL(blob);
+
+      setResult({
+        type: 'success',
+        message: 'RTK Query endpoints generated successfully!',
+        downloadUrl: downloadUrl
+      });
     } catch (error: any) {
       setResult({
         type: 'error',
-        message: `Network Error: ${error.message}. Make sure the conversion server is running (default: http://localhost:4000)`
+        message: error.message || "An unexpected error occurred"
       });
     } finally {
       setIsLoading(false);
@@ -173,12 +185,15 @@ export default function EndpointConverter() {
 
   const handleClear = () => {
     setJsonInput('');
-    setSelectedFile(null);
-    setSwaggerData(null);
-    setResult({ type: null, message: '' });
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+    // setSelectedFile(null);
+    // setSwaggerData(null);
+    if (result.downloadUrl) {
+      URL.revokeObjectURL(result.downloadUrl);
     }
+    setResult({ type: null, message: '' });
+    // if (fileInputRef.current) {
+    //   fileInputRef.current.value = '';
+    // }
   };
 
   return (
@@ -214,19 +229,21 @@ export default function EndpointConverter() {
             <div className="method-buttons">
               <button
                 type="button"
-                className={`method-btn ${inputMethod === 'file' ? 'active' : ''}`}
-                onClick={() => setInputMethod('file')}
+                className="method-btn"
+                disabled
+                title="Coming Soon"
+                style={{ opacity: 0.5, cursor: 'not-allowed' }}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
                   <polyline points="13 2 13 9 20 9"></polyline>
                 </svg>
                 Upload File
+                <span style={{ fontSize: '0.7em', marginLeft: '0.4em', opacity: 0.7 }}>(Coming Soon)</span>
               </button>
               <button
                 type="button"
-                className={`method-btn ${inputMethod === 'json' ? 'active' : ''}`}
-                onClick={() => setInputMethod('json')}
+                className="method-btn active"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <polyline points="16 18 22 12 16 6"></polyline>
@@ -237,53 +254,20 @@ export default function EndpointConverter() {
             </div>
           </div>
 
-          {/* File Upload Section */}
-          {inputMethod === 'file' && (
-            <div className="input-section">
-              <label className="input-label">Upload Swagger/OpenAPI File</label>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json,.yaml,.yml"
-                onChange={handleFileSelect}
-                style={{ display: 'none' }}
-              />
-              <div
-                className={`drop-zone ${isDragging ? 'dragover' : ''}`}
-                onClick={() => fileInputRef.current?.click()}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-              >
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ opacity: 0.5, marginBottom: '1rem' }}>
-                  <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
-                  <polyline points="13 2 13 9 20 9"></polyline>
-                </svg>
-                <div className="drop-zone-text">Click to upload or drag and drop</div>
-                <div className="drop-zone-hint">JSON, YAML files accepted</div>
-                {selectedFile && (
-                  <div className="file-name">📄 {selectedFile.name}</div>
-                )}
-              </div>
+          {/* JSON Input Section (always visible) */}
+          <div className="input-section">
+            <label className="input-label">Paste Swagger/OpenAPI JSON</label>
+            <textarea
+              value={jsonInput}
+              onChange={(e) => setJsonInput(e.target.value)}
+              placeholder='Paste your Swagger/OpenAPI JSON here...'
+              className="json-textarea"
+              rows={12}
+            />
+            <div className="input-hint">
+              💡 Paste your complete Swagger/OpenAPI specification in JSON format
             </div>
-          )}
-
-          {/* JSON Input Section */}
-          {inputMethod === 'json' && (
-            <div className="input-section">
-              <label className="input-label">Paste Swagger/OpenAPI JSON</label>
-              <textarea
-                value={jsonInput}
-                onChange={(e) => setJsonInput(e.target.value)}
-                placeholder='Paste your Swagger/OpenAPI JSON here...'
-                className="json-textarea"
-                rows={12}
-              />
-              <div className="input-hint">
-                💡 Paste your complete Swagger/OpenAPI specification in JSON format
-              </div>
-            </div>
-          )}
+          </div>
 
           {/* Action Buttons */}
           <div className="action-buttons">
@@ -322,7 +306,7 @@ export default function EndpointConverter() {
                 <div className="result-message">{result.message}</div>
               </div>
               {result.downloadUrl && (
-                <a href={result.downloadUrl} className="download-btn" target="_blank" rel="noopener noreferrer">
+                <a href={result.downloadUrl} download="rtk_endpoints.zip" className="download-btn" rel="noopener noreferrer">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                     <polyline points="7 10 12 15 17 10"></polyline>
